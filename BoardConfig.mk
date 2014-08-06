@@ -4,6 +4,8 @@
 #inherit from the common tamsui definitions
 -include device/sony/tamsui-common/BoardConfigCommon.mk
 
+DEVICE_RESOLUTION := 320x480
+
 TARGET_SPECIFIC_HEADER_PATH += device/sony/nanhu/include
 
 TARGET_KERNEL_SOURCE := kernel/sony/nanhu
