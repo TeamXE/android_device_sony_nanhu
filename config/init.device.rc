@@ -16,17 +16,6 @@ on post-fs-data
 
     insmod /system/lib/modules/cfg80211.ko
 
-#Compass Fix
-    # Magnetic device
-    chown system system /sys/class/compass/magnetic/enable_acc
-    chown system system /sys/class/compass/magnetic/enable_mag
-    chown system system /sys/class/compass/magnetic/enable_ori
-    chown system system /sys/class/compass/magnetic/delay_acc
-    chown system system /sys/class/compass/magnetic/delay_mag
-    chown system system /sys/class/compass/magnetic/delay_ori
-    chown system system /sys/class/compass/magnetic/accel
-    chown system system /sys/class/compass/magnetic/get_device_infor  
-
 on early-charger
     wait /dev/block/mmcblk0p2
     start tad
@@ -42,13 +31,16 @@ on early-charger
 
 on charger
     start charger
-
+    
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class late_start
     user bluetooth
     group qcom_oncrpc bluetooth net_bt_admin
     disabled
     oneshot
+
+service charger /charger
+    class charger
 
 # SEMC, TA Daemon
 service tad /sbin/tad /dev/block/mmcblk0p2 0,16,256
@@ -57,12 +49,24 @@ service tad /sbin/tad /dev/block/mmcblk0p2 0,16,256
     group root
     socket tad stream 0660 system system
 
-service charger /charger
-    class charger
+service dhcpcd_bnep /system/bin/dhcpcd -BKLG
+    class late_start
+    disabled
+    oneshot
+    
+ #Compass Fix
+    # Magnetic device
+    chown system system /sys/class/compass/magnetic/enable_acc
+    chown system system /sys/class/compass/magnetic/enable_mag
+    chown system system /sys/class/compass/magnetic/enable_ori
+    chown system system /sys/class/compass/magnetic/delay_acc
+    chown system system /sys/class/compass/magnetic/delay_mag
+    chown system system /sys/class/compass/magnetic/delay_ori
+    chown system system /sys/class/compass/magnetic/accel
+    chown system system /sys/class/compass/magnetic/get_device_infor 
 
-# Magnetic service
-service akmd /system/bin/magnetic -m 2
+ # Magnetic service
+ service akmd /system/bin/magnetic -m 2
     class main
     user compass
     group system
-

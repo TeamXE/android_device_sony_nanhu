@@ -38,57 +38,35 @@ if [[ $? != 0 ]]
 then
 	if [ ! -e /cache/recovery/boot ]
 	then
-	        # trigger ON LED
-	        busybox echo ${BOOTREC_LED_BLUE} > ${BOOTREC_CONTROL_LED}
+	        # trigger ON GREEN NOTIFICATION BAR
+	        busybox echo ${BOOTREC_LED_GREEN} > ${BOOTREC_CONTROL_LED}
 
 	        # keycheck
 	        busybox cat ${BOOTREC_EVENT} > /dev/keycheck&
 	        busybox sleep 3
 
-	        # trigger OFF LED
+	        # trigger OFF NOTIFICATION BAR
 	        busybox echo ${BOOTREC_LED_OFF} > ${BOOTREC_CONTROL_LED}
 	fi
 
 	# boot decision
 	if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
 	then
-		busybox echo 'TWRP BOOT' >>boot.txt
+		busybox echo 'RECOVERY BOOT' >>boot.txt
 		busybox rm -fr /cache/recovery/boot
-		# trigger led
-		busybox echo ${BOOTREC_LED_ORANGE} > ${BOOTREC_CONTROL_LED}
-
 		# recovery ramdisk
 		load_image=/sbin/ramdisk-recovery.cpio
 	else
-		busybox sleep 3
-
-		# trigger ON LED
-	        busybox echo ${BOOTREC_LED_GREEN} > ${BOOTREC_CONTROL_LED}
-
-	        # keycheck
-	        busybox cat ${BOOTREC_EVENT} > /dev/keycheck&
-	        busybox sleep 3
-
-	        # trigger OFF LED
-	        busybox echo ${BOOTREC_LED_GREEN} > ${BOOTREC_CONTROL_LED}
-
-		if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
-		then
-			busybox echo 'CWM BOOT' >>boot.txt
-			busybox rm -fr /cache/recovery/boot
-			# trigger led
-			busybox echo ${BOOTREC_LED_ORANGE} > ${BOOTREC_CONTROL_LED}
-			# recovery ramdisk
-			load_image=/sbin/ramdisk-cwm.cpio
-		else
-			busybox echo 'ANDROID BOOT' >>boot.txt
-			# poweroff LED
-			busybox echo ${BOOTREC_LED_OFF} > ${BOOTREC_CONTROL_LED}
-		fi
+		busybox echo 'ANDROID BOOT' >>boot.txt
+		# poweroff notification
+		busybox echo ${BOOTREC_LED_OFF} > ${BOOTREC_CONTROL_LED}
 	fi
+
 	# kill the keycheck process
 	busybox pkill -f "busybox cat ${BOOTREC_EVENT}"
 fi
+
+busybox echo 0 > ${BOOTREC_BUTTON_BACKLIGHT}
 
 # unpack the ramdisk image
 busybox cpio -i < ${load_image}
