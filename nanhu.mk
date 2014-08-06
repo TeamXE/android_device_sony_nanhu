@@ -35,11 +35,9 @@ PRODUCT_AAPT_PREF_CONFIG := mdpi
 
 # Configuration scripts
 PRODUCT_COPY_FILES += \
-    device/sony/nanhu/config/main.conf:system/etc/bluetooth/main.conf \
     device/sony/nanhu/config/audio_policy.conf:system/etc/audio_policy.conf \
     device/sony/nanhu/config/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     device/sony/nanhu/config/init.device.rc:root/init.device.rc \
-    device/sony/nanhu/config/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
     device/sony/nanhu/../tamsui-common/prebuilt/logo_M.rle:root/logo.rle
 
 # USB function switching
@@ -51,6 +49,12 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     device/sony/nanhu/config/vold.fstab:system/etc/vold.fstab
+    
+PRODUCT_COPY_FILES += \
+    device/sony/nanhu_ds/config/init.bluetooth.sh:system/etc/init.bluetooth.sh
+    
+PRODUCT_PACKAGES += \
+    hciattach
 
 # Device specific part for two-stage boot
 PRODUCT_COPY_FILES += \

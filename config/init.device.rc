@@ -1,3 +1,5 @@
+import init.bluetooth.rc
+
 on post-fs-data
     chown system system /sys/devices/virtual/timed_output/vibrator/enable_vibrator
     chmod 0660 /sys/devices/virtual/timed_output/vibrator/enable_vibrator
@@ -15,6 +17,13 @@ on post-fs-data
     chmod 0660 /sys/class/leds/lm3533-light-button/brightness
 
     insmod /system/lib/modules/cfg80211.ko
+    insmod /system/lib/modules/compat.ko
+    insmod /system/lib/modules/bluetooth.ko
+    insmod /system/lib/modules/bluetooth-power.ko
+    insmod /system/lib/modules/hci_uart.ko
+    insmod /system/lib/modules/bnep.ko
+    insmod /system/lib/modules/hidp.ko
+    insmod /system/lib/modules/rfcomm.ko
 
 on early-charger
     wait /dev/block/mmcblk0p2
@@ -31,13 +40,6 @@ on early-charger
 
 on charger
     start charger
-    
-service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
-    class late_start
-    user bluetooth
-    group qcom_oncrpc bluetooth net_bt_admin
-    disabled
-    oneshot
 
 service charger /charger
     class charger

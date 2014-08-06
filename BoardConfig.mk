@@ -4,8 +4,6 @@
 #inherit from the common tamsui definitions
 -include device/sony/tamsui-common/BoardConfigCommon.mk
 
-DEVICE_RESOLUTION := 320x480
-
 TARGET_SPECIFIC_HEADER_PATH += device/sony/nanhu/include
 
 TARGET_KERNEL_SOURCE := kernel/sony/nanhu
@@ -57,6 +55,18 @@ TARGET_OTA_ASSERT_DEVICE := C1504,C1505,C1604,C1605,nanhu,nanhu_ds
 -PRODUCT_PROPERTY_OVERRIDES += ro.config.low_ram=true
 
 # Bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/nanhu/bluedroid
-
+KERNEL_BT_MODULES:
+       make -C kernel/backports ARCH=arm CROSS_COMPILE="arm-eabi-" KLIB=../../out/target/product/nanhu_ds/obj/KERNEL_OBJ KLIB_BUILD=../../out/target/product/nanhu_ds/obj/KERNEL_OBJ defconfig-nanhu-bt \
+       make -C kernel/backports ARCH=arm CROSS_COMPILE="arm-eabi-" KLIB=../../out/target/product/nanhu_ds/obj/KERNEL_OBJ KLIB_BUILD=../../out/target/product/nanhu_ds/obj/KERNEL_OBJ \
+       mv kernel/backports/compat/compat.ko $(KERNEL_MODULES_OUT) \
+       mv kernel/backports/net/bluetooth/bluetooth.ko $(KERNEL_MODULES_OUT) \
+       mv kernel/backports/net/bluetooth/rfcomm/rfcomm.ko $(KERNEL_MODULES_OUT) \
+       mv kernel/backports/net/bluetooth/bnep/bnep.ko $(KERNEL_MODULES_OUT) \
+       mv kernel/backports/net/bluetooth/hidp/hidp.ko $(KERNEL_MODULES_OUT) \
+       mv kernel/backports/drivers/bluetooth/bluetooth-power.ko $(KERNEL_MODULES_OUT) \
+       mv kernel/backports/drivers/bluetooth/hci_uart.ko $(KERNEL_MODULES_OUT)
+       
+TARGET_KERNEL_MODULES := KERNEL_BT_MODULES
+BOARD_HAVE_BLUETOOTH_BCM := 
+#BOARD_HAVE_BLUETOOTH_QCOM := true
 TARGET_NO_HW_VSYNC := 
